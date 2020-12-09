@@ -1,0 +1,62 @@
+Tables:
+
+1) customers
+- id
+- name
+- email
+- password
+- contact
+- address
+
+2) admin
+- id
+- name
+- email
+- password
+- contact
+
+3) products
+- id
+- name
+- price 
+- description
+- type
+- quantity
+- image1
+- image2
+- image3
+
+4) orders
+- id
+- cust_id
+- bill
+- time_stamp
+- expected_delievry_date
+- order_details
+- note
+- paid
+- payment_opt
+- delivery_city
+- status
+
+5) Cart
+- id
+- prod_id
+- prod_quantity
+- item_price
+- prod_total
+
+6) Category
+- id
+- name
+- description
+- image
+
+7) Reviews
+- id
+- cust_id
+- title
+- review_text
+- rating
+- image
+- published_date
