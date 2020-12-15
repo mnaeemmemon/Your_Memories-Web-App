@@ -21,8 +21,8 @@
 		}
 		else if ($username != "" && $password != "")
 		{
-			$case1 = "select* from customers where name = '$username' && password = '$password' ";
-			$case2 = "select* from customers where name = '$username' ";
+			$case1 = "select* from admin where name = '$username' && password = '$password' ";
+			$case2 = "select* from admin where name = '$username' ";
 			
 			$result1 = mysqli_query($conn, $case1);
 			$result2 = mysqli_query($conn, $case2);
@@ -36,7 +36,7 @@
 					$_SESSION['userid'] = $row['id'];
 				}
 				echo "<script>localStorage.setItem('userExist', true); </script>";
-				header('location: home.html');
+				header('location: admin/index.php');
 			}
 			else if($num2 == 1)
 			{
@@ -59,13 +59,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Login Page</title>
+    <title>Login Page | Admin portal</title>
     <link rel="stylesheet" href="fonts/material-icon/css/material-design-iconic-font.min.css">
 	<script type="text/javascript">
-        history.pushState(null, null, location.href);
-        history.back();
-        history.forward();
-        window.onpopstate = function () { history.go(1); };
+        window.history.pushState(null, "", window.location.href);
+window.onpopstate = function () {
+    window.history.pushState(null, "", window.location.href);
+};
     </script>
     <link rel="stylesheet" href="css/style2.css">
 </head>
@@ -77,7 +77,7 @@
             <div class="container">
                 <div class="signup-content">
                     <form method="POST" id="signup-form" class="signup-form">
-                        <h2 class="form-title">Log in</h2>
+                        <h2 class="form-title">Log in | Admin portal</h2>
                         <div class="form-group">
                             <input type="text" class="form-input" name="username" id="name" placeholder="Your Name"/>
                         </div>
@@ -87,12 +87,8 @@
                         </div>
                         <div class="form-group">
                             <input type="submit" name="Submit" id="submit" class="form-submit" value="Log in"/>
-						</div>
+                        </div>
                     </form>
-					<a class="button_style" href="index_admin.php" >Want To Login As Admin?</a>
-					<p class="loginhere" style="margin-top: 40px; color: black; margin-bottom: 0px">
-                        Not have an account ? <a href="signup.php" class="loginhere-link" style=" background-color: black; padding: 8px; border-radius: 5px; color: white">Register Here</a>
-                    </p>
                 </div>
             </div>
         </section>
