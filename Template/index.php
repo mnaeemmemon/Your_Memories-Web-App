@@ -36,7 +36,7 @@
 					$_SESSION['userid'] = $row['id'];
 				}
 				echo "<script>localStorage.setItem('userExist', true); </script>";
-				header('location: home.html');
+				header('location: home.php');
 			}
 			else if($num2 == 1)
 			{

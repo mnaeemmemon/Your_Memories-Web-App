@@ -1,7 +1,42 @@
 <!DOCTYPE html>
+<?php
+if($_POST){
+	$name = $_POST['name'];
+	$description = $_POST['description'];
+    $image = addslashes(file_get_contents($_FILES['image']['tmp_name']));
+    $con = mysqli_connect('localhost','root','','yourmemories') or die('Unable To connect');
+
+	if($name!="" && $description!="" && $image!="")
+	{
+		$query= "select * from category where name='$name'";
+		$check = mysqli_query($con, $query);
+		$num = mysqli_num_rows($check);
+	
+		if($num==1)
+		{
+			$sql = "update category set description='$description', image='$image' where name='$name'";
+	
+			if(mysqli_query($con, $sql)){
+				echo '<script>alert("Category Updated Successfully")</script>';
+			}else{
+				echo '<script>alert("Category is not updated")</script>';
+			}
+		}
+		else
+		{
+			echo '<script>alert("Category Not Found")</script>'; 
+		}
+	}
+	else
+	{
+		echo '<script>alert("All Field Are Required To Be Filled")</script>'; 
+	}
+	mysqli_close($con);
+}
+?>
 <html lang="en">
 
-<!-- Mirrored from educhamp.themetrades.com/demo/admin/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 22 Feb 2019 13:08:15 GMT -->
+<!-- Mirrored from educhamp.themetrades.com/demo/admin/add-listing.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 22 Feb 2019 13:09:05 GMT -->
 <head>
 
 	<!-- META ============================================= -->
@@ -25,7 +60,7 @@
 	<link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.png" />
 	
 	<!-- PAGE TITLE HERE ============================================= -->
-	<title>Your Memories | Admin Portal</title>
+	<title>Update Category | Admin Portal</title>
 	
 	<!-- MOBILE SPECIFIC ============================================= -->
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -52,7 +87,6 @@
 	
 </head>
 <body class="ttr-opened-sidebar ttr-pinned-sidebar">
-	
 	<!-- header start -->
 	<header class="ttr-header">
 		<div class="ttr-header-wrapper">
@@ -158,180 +192,59 @@
 	</div>
 	<!-- Left sidebar menu end -->
 
+
 	<!--Main container start -->
 	<main class="ttr-wrapper">
 		<div class="container-fluid">
 			<div class="db-breadcrumb">
-				<h4 class="breadcrumb-title">Dashboard</h4>
+				<h4 class="breadcrumb-title">Update category</h4>
 				<ul class="db-breadcrumb-list">
 					<li><a href="#"><i class="fa fa-home"></i>Home</a></li>
-					<li>Dashboard</li>
+					<li>Update Category</li>
 				</ul>
 			</div>	
-			<!-- Card -->
 			<div class="row">
-				<div class="col-md-6 col-lg-3 col-xl-3 col-sm-6 col-12">
-					<div class="widget-card widget-bg2">					 
-						<div class="wc-item">
-							<h4 class="wc-title" style="margin-top: 8px;" >
-								Total Users
-							</h4>
-							<?php
-								$con = mysqli_connect('localhost','root','','yourmemories') or die('Unable To connect');
-								$res=mysqli_query($con,"select * from customers");
-								$num=mysqli_num_rows($res);
-								echo "<span class='wc-stats' > $num </span>";
-							?>	
-						</div>				      
-					</div>
-				</div>
-				<div class="col-md-6 col-lg-3 col-xl-3 col-sm-6 col-12">
-					<div class="widget-card widget-bg3">					 
-						<div class="wc-item">
-							<h4 class="wc-title" style="margin-top: 8px;" >
-								Total Categories
-							</h4>
-							<?php
-								$con = mysqli_connect('localhost','root','','yourmemories') or die('Unable To connect');
-								$res=mysqli_query($con,"select * from category");
-								$num=mysqli_num_rows($res);
-								echo "<span class='wc-stats ' > $num </span>";
-							?>
-						</div>				      
-					</div>
-				</div>
-				<div class="col-md-6 col-lg-3 col-xl-3 col-sm-6 col-12">
-					<div class="widget-card widget-bg4">					 
-						<div class="wc-item">
-							<h4 class="wc-title" style="margin-top: 8px;" >
-								Total Products
-							</h4>
-							<?php
-								$con = mysqli_connect('localhost','root','','yourmemories') or die('Unable To connect');
-								$res=mysqli_query($con,"select * from products");
-								$num=mysqli_num_rows($res);
-								echo "<span class='wc-stats' > $num </span>";
-							?>	
-						</div>				      
-					</div>
-				</div>
-				<div class="col-md-6 col-lg-3 col-xl-3 col-sm-6 col-12">
-					<div class="widget-card widget-bg2">					 
-						<div class="wc-item">
-							<h4 class="wc-title" style="margin-top: 8px;" >
-								Total Reviews
-							</h4>
-							<?php
-								$con = mysqli_connect('localhost','root','','yourmemories') or die('Unable To connect');
-								$res=mysqli_query($con,"select * from reviews");
-								$num=mysqli_num_rows($res);
-								echo "<span class='wc-stats' > $num </span>";
-							?>	
-						</div>				      
-					</div>
-				</div>
-			</div>
-			<!-- Card END -->
-			<div class="row">
+				<!-- Your Profile Views Chart -->
 				<div class="col-lg-12 m-b30">
 					<div class="widget-box">
 						<div class="wc-title">
-							<h3>Orders</h3>
+							<h4>Update Category</h4>
 						</div>
 						<div class="widget-inner">
-						<?php
-						$con = mysqli_connect('localhost','root','','yourmemories') or die('Unable To connect');
-						$res=mysqli_query($con,"select * from orders");
-
-							while($row=mysqli_fetch_array($res))
-							{
-								$oid = $row['id'];
-								$date= $row['delivery_date'];
-								$status= $row['status'];
-								$cid = $row['customer_id'];
-
-								$res1=mysqli_query($con,"select from customers where id='$cid'");
-								$row2=mysqli_fetch_array($res1);
-
-								$name=$row2['name'];
-								
-								echo '<div class="orders-list">';
-								echo '<ul>';
-								echo '<li>';
-								echo '<span class="orders-title">';
-								echo "<a class='orders-title-name'>$name</a>";
-								echo "<span class='orders-info'>Order: $oid | Date: $date</span>";
-								echo '</span>';
-								echo '<span class="orders-btn">';
-								echo "<a class='btn button-sm red'>$status</a>";
-								echo '</span>';
-								echo '</li>';
-								echo '</ul>';
-								echo '</div>';
-							} 
-						?>
+							<form  class="edit-profile m-b30" method="post" enctype="multipart/form-data" >
+								<div class="row">
+									<div class="col-12">
+										<div class="ml-auto">
+											<h3>Change Details</h3>
+										</div>
+									</div>
+									<div class="form-group col-6">
+										<label class="col-form-label">Category Name</label>
+										<div>
+											<input class="form-control" type="text" name="name" value="">
+										</div>
+									</div>
+									<div class="form-group col-6">
+										<label class="col-form-label">Category Description</label>
+										<div>
+											<input class="form-control" type="text"  name="description" value="">
+										</div>
+									</div>
+									<div class="form-group col-6">
+										<label class="col-form-label">Category Image (Image Format Should be JPEG)</label>
+										<div>
+											<input type="file" name="image" id="image" />
+										</div>
+									</div>
+									<div class="col-12">
+    									<input type="submit" class="btn" value="Upload" name="insert"></input>
+									</div>
+								</div>
+							</form>
 						</div>
 					</div>
 				</div>
-				<div class="col-lg-12 m-b30">	
-					<div class="widget-box">
-						<div class="wc-title">
-							<h3>Products</h3>
-						</div>
-						<div class="widget-inner">
-							<div class="orders-list">
-								<ul>
-								<?php
-									$con = mysqli_connect('localhost','root','','yourmemories') or die('Unable To connect');
-									$res=mysqli_query($con,"select * from products");
-
-									while($row=mysqli_fetch_array($res))
-									{
-										$pro_name = $row['name'];
-										$pro_price = $row['price'];
-										$pro_quan = $row['quantity'];
-
-										echo '<li>';
-										echo '<span class="orders-title">';
-										echo "<a class='orders-title-name'>$pro_name</a>";
-										echo "<p class='orders-info'>Price: $pro_price | Quantity: $pro_quan </p>";
-										echo '</span>';
-										echo '</li>';
-									} 
-								?>
-								</ul>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="col-lg-12 m-b30">	
-					<div class="widget-box">
-						<div class="wc-title">
-							<h3>Categories</h3>
-						</div>
-						<div class="widget-inner">
-							<div class="orders-list">
-								<ul>
-								<?php
-									$con = mysqli_connect('localhost','root','','yourmemories') or die('Unable To connect');
-									$res=mysqli_query($con,"select * from category");
-
-									while($row=mysqli_fetch_array($res))
-									{
-										$cat_name = $row['name'];
-
-										echo '<li>';
-										echo '<span class="orders-title">';
-										echo "<a class='orders-title-name'>$cat_name</a>";
-										echo '</span>';
-										echo '</li>';
-									} 
-								?>
-								</ul>
-							</div>
-						</div>
-					</div>
-				</div>
+				<!-- Your Profile Views Chart END-->
 			</div>
 		</div>
 	</main>
@@ -354,10 +267,26 @@
 <script src="assets/js/functions.js"></script>
 <script src="assets/vendors/chart/chart.min.js"></script>
 <script src="assets/js/admin.js"></script>
-<script src='assets/vendors/calendar/moment.min.js'></script>
-<script src='assets/vendors/calendar/fullcalendar.js'></script>
 <script src='assets/vendors/switcher/switcher.js'></script>
+<script>
+// Pricing add
+	function newMenuItem() {
+		var newElem = $('tr.list-item').first().clone();
+		newElem.find('input').val('');
+		newElem.appendTo('table#item-add');
+	}
+	if ($("table#item-add").is('*')) {
+		$('.add-item').on('click', function (e) {
+			e.preventDefault();
+			newMenuItem();
+		});
+		$(document).on("click", "#item-add .delete", function (e) {
+			e.preventDefault();
+			$(this).parent().parent().parent().parent().remove();
+		});
+	}
+</script>
 </body>
 
-<!-- Mirrored from educhamp.themetrades.com/demo/admin/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 22 Feb 2019 13:09:05 GMT -->
+<!-- Mirrored from educhamp.themetrades.com/demo/admin/add-listing.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 22 Feb 2019 13:09:05 GMT -->
 </html>

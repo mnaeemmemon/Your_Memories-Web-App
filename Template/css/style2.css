@@ -720,7 +720,7 @@
 	}
 	
 	.button_design{
-		background-color: #40e0d0;
+		background-color: cyan;
 		padding: 5px 30px 5px 30px; 
 		border: 2px white solid; 
 		border-radius: 10px; 
@@ -4885,7 +4885,7 @@
 	
 	@media screen and (max-width: 1000px) {
 		.button_design{
-			background-color: #40E0D0;
+			background-color:cyan;
 			padding: 3px 20px 3px 20px; 
 			border: 2px white solid; 
 			border-radius: 10px; 
@@ -4906,7 +4906,7 @@
 			padding: 20px;
 		}
 		.button_design{
-			background-color: #40E0D0;
+			background-color: cyan;
 			padding: 2px 20px 2px 20px; 
 			border: 2px white solid; 
 			border-radius: 10px; 
@@ -4922,7 +4922,7 @@
 			padding-top: 30px;
 		}
 		.button_design{
-			background-color: #40E0D0;
+			background-color:cyan;
 			padding: 1px 10px 1px 10px; 
 			border: 1px white solid; 
 			border-radius: 10px; 

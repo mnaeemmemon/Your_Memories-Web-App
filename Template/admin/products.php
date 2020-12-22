@@ -137,6 +137,18 @@
 		                	<span class="ttr-label">Delete Product</span>
 		                </a>
 					</li>
+					<li>
+						<a href="update-product.php" class="ttr-material-button">
+							<span class="ttr-icon"><i class="ti-pencil-alt"></i></span>
+		                	<span class="ttr-label">Update Product</span>
+		                </a>
+					</li>
+					<li>
+						<a href="update-category.php" class="ttr-material-button">
+							<span class="ttr-icon"><i class="ti-close"></i></span>
+		                	<span class="ttr-label">Update Category</span>
+		                </a>
+					</li>
 		            <li class="ttr-seperate"></li>
 				</ul>
 				<!-- sidebar menu end -->

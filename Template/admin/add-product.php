@@ -16,18 +16,29 @@ if($_POST)
 
 	if($name!="" && $price!="" && $description!="" && $type!="" && $quantity!="" && $image1!="" && $image2!="" && $image3!="")
 	{
-		$query= "select * from category where name='$name'";
+		$query= "select * from products where name='$name'";
 		$check = mysqli_query($con, $query);
 		$num = mysqli_num_rows($check);
-	
+
 		if($num==0)
 		{
-			$sql = "insert into products (name, price, description, type, quantity, image1, image2, image3) values('$name', '$price', '$description', '$type', '$quantity','$image1', '$image2', '$image3')";
+			$query2= "select * from category where name='$type'";
+			$check2 = mysqli_query($con, $query2);
+			$num2 = mysqli_num_rows($check2);
+
+			if($num2!=0)
+			{
+				$sql = "insert into products (name, price, description, type, quantity, image1, image2, image3) values('$name', '$price', '$description', '$type', '$quantity','$image1', '$image2', '$image3')";
 	
-			if(mysqli_query($con, $sql)){
-				echo '<script>alert("Product Added Successfully")</script>';
-			}else{
-				echo '<script>alert("Product is not Added")</script>';
+				if(mysqli_query($con, $sql)){
+					echo '<script>alert("Product Added Successfully")</script>';
+				}else{
+					echo '<script>alert("Product is not Added")</script>';
+				}
+			}
+			else
+			{
+				echo '<script>alert("Category Not Found")</script>'; 
 			}
 		}
 		else
@@ -180,6 +191,18 @@ if($_POST)
 						<a href="delete-product.php" class="ttr-material-button">
 							<span class="ttr-icon"><i class="ti-close"></i></span>
 		                	<span class="ttr-label">Delete Product</span>
+		                </a>
+					</li>
+					<li>
+						<a href="update-product.php" class="ttr-material-button">
+							<span class="ttr-icon"><i class="ti-pencil-alt"></i></span>
+		                	<span class="ttr-label">Update Product</span>
+		                </a>
+					</li>
+					<li>
+						<a href="update-category.php" class="ttr-material-button">
+							<span class="ttr-icon"><i class="ti-close"></i></span>
+		                	<span class="ttr-label">Update Category</span>
 		                </a>
 					</li>
 		            <li class="ttr-seperate"></li>
