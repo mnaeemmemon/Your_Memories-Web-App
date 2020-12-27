@@ -1,4 +1,79 @@
 <!DOCTYPE html>
+<?php
+    session_start();
+    require 'PHPMailer/PHPMailerAutoload.php';
+    if($_SESSION['userid']=="")
+    {
+        header('location: index.php');
+    }
+    
+    if(array_key_exists('place', $_POST))
+    {
+        $name=$_POST['name'];
+        $address=$_POST['address'];
+        $phone=$_POST['contact'];
+        $email=$_POST['mail'];
+        $dcity=$_POST['dcity'];
+        $note=$_POST['note'];
+        $dtype=$_POST['check'];
+        $uid=$_SESSION['userid'];
+        $st=$_SESSION['subtotal'];
+        $date = date('Y/m/d');
+        $ddate= date('Y-m-d', strtotime(' + 5 days'));
+        $details=$_SESSION['details'];
+        $con = mysqli_connect('localhost','root','','yourmemories') or die('Unable To connect');
+
+        if($name!="" && $address!="" && $phone!="" && $email!="" && $dcity!="" && $dtype!="")
+        {
+            if($dtype="COD")
+            {
+                $query2 = "insert into orders (customer_id, bill, time_stamp, delivery_date, order_details, note, paid, payment_opt, delivery_city, status) value ('$uid' ,'$st', '$date', '$ddate', '$details', '$note', 'No','Cash On Delievry', '$dcity', 'Placed')";
+                mysqli_query($con, $query2);
+                $query = "TRUNCATE cart";
+                mysqli_query($con, $query);
+            }
+            else
+            {
+                $query2 = "insert into orders (customer_id, bill, time_stamp, delivery_date, order_details, note, paid, payment_opt, delivery_city, status) value ('$uid' ,'$st', '$date', '$details', '$note', 'Yes','CreditCard', '$dcity', 'Placed')";
+                mysqli_query($con, $query2);
+                $query = "TRUNCATE cart";
+                mysqli_query($con, $query);
+            }
+
+            $mail = new PHPMailer;
+            $usname="yourmemories.pk@gmail.com";
+            $uspass="123@0314123";
+
+            $mail->isSMTP();                                      // Set mailer to use SMTP
+            $mail->Host = 'smtp.gmail.com';  // Specify main and backup SMTP servers
+            $mail->SMTPAuth = true;                               // Enable SMTP authentication
+            $mail->Username = $usname;                 // SMTP username
+            $mail->Password = $uspass;                           // SMTP password
+            $mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
+            $mail->Port = 587;                                    // TCP port to connect to
+
+            $mail->setFrom($usname, "Your Memories");
+            $mail->addAddress($email, 'Your Memories'); 
+
+            $mail->Subject = 'Thanks For Placing Order';
+            $mail->Body    = "<h2 style='color: black;'>Your Order Has Been Placed Successfully!</h2><h4 style='color: black;'>Order Details:</h4>$details<h4 style='color: black;'>Looking Forward For Your Good Reviews!</h4><h4 style='color: black;'>Regards<br>Team Your Memories</h4>";
+            $mail->AltBody = 'Your Order Has Been Placed SuccessFully!';
+
+            if(!$mail->send()) 
+            {
+                echo 'Message could not be sent.';
+                echo 'Mailer Error: ' . $mail->ErrorInfo;
+            } 
+            else {
+                header('location: thanks.html');
+            }
+        }
+        else
+        {
+            echo '<script>alert("All fields are required to be filled!")</script>';
+        }
+    }
+?>
 <html lang="en">
 
 <head>
@@ -9,7 +84,7 @@
     <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
     <!-- Title  -->
-    <title>Karl - Fashion Ecommerce Template | Checkout</title>
+    <title>Your Memories | Checkout</title>
 
     <!-- Favicon  -->
     <link rel="icon" href="img/core-img/favicon.ico">
@@ -17,6 +92,24 @@
     <!-- Core Style CSS -->
     <link rel="stylesheet" href="css/core-style.css">
     <link rel="stylesheet" href="style.css">
+    <script>
+        function showcc(element)
+        {
+            var check2 = document.getElementById("customCheck2");
+            var check1 = document.getElementById("customCheck1");
+            var ex_div = document.getElementById("ccdetails");
+            if(element=="customCheck1")
+            {
+                ex_div.style.display="none";
+                check2.checked=false;
+            }
+            else if(element=="customCheck2")
+            {
+                ex_div.style.display="block";
+                check1.checked=false;
+            } 
+        }
+    </script>
 
     <!-- Responsive CSS -->
     <link href="css/responsive.css" rel="stylesheet">
@@ -24,7 +117,8 @@
 </head>
 
 <body>
-    <div class="catagories-side-menu">
+    
+<div class="catagories-side-menu">
         <!-- Close Icon -->
         <div id="sideMenuClose">
             <i class="ti-close"></i>
@@ -32,61 +126,23 @@
         <!--  Side Nav  -->
         <div class="nav-side-menu">
             <div class="menu-list">
-                <h6>Categories</h6>
+                <h6>Menu</h6>
                 <ul id="menu-content" class="menu-content collapse out">
                     <!-- Single Item -->
-                    <li data-toggle="collapse" data-target="#women" class="collapsed active">
-                        <a href="#">Woman wear <span class="arrow"></span></a>
-                        <ul class="sub-menu collapse" id="women">
-                            <li><a href="#">Midi Dresses</a></li>
-                            <li><a href="#">Maxi Dresses</a></li>
-                            <li><a href="#">Prom Dresses</a></li>
-                            <li><a href="#">Little Black Dresses</a></li>
-                            <li><a href="#">Mini Dresses</a></li>
-                        </ul>
-                    </li>
-                    <!-- Single Item -->
-                    <li data-toggle="collapse" data-target="#man" class="collapsed">
-                        <a href="#">Man Wear <span class="arrow"></span></a>
-                        <ul class="sub-menu collapse" id="man">
-                            <li><a href="#">Man Dresses</a></li>
-                            <li><a href="#">Man Black Dresses</a></li>
-                            <li><a href="#">Man Mini Dresses</a></li>
-                        </ul>
-                    </li>
-                    <!-- Single Item -->
-                    <li data-toggle="collapse" data-target="#kids" class="collapsed">
-                        <a href="#">Children <span class="arrow"></span></a>
-                        <ul class="sub-menu collapse" id="kids">
-                            <li><a href="#">Children Dresses</a></li>
-                            <li><a href="#">Mini Dresses</a></li>
-                        </ul>
-                    </li>
-                    <!-- Single Item -->
-                    <li data-toggle="collapse" data-target="#bags" class="collapsed">
-                        <a href="#">Bags &amp; Purses <span class="arrow"></span></a>
-                        <ul class="sub-menu collapse" id="bags">
-                            <li><a href="#">Bags</a></li>
-                            <li><a href="#">Purses</a></li>
-                        </ul>
-                    </li>
-                    <!-- Single Item -->
-                    <li data-toggle="collapse" data-target="#eyewear" class="collapsed">
-                        <a href="#">Eyewear <span class="arrow"></span></a>
-                        <ul class="sub-menu collapse" id="eyewear">
-                            <li><a href="#">Eyewear Style 1</a></li>
-                            <li><a href="#">Eyewear Style 2</a></li>
-                            <li><a href="#">Eyewear Style 3</a></li>
-                        </ul>
-                    </li>
-                    <!-- Single Item -->
                     <li data-toggle="collapse" data-target="#footwear" class="collapsed">
-                        <a href="#">Footwear <span class="arrow"></span></a>
-                        <ul class="sub-menu collapse" id="footwear">
-                            <li><a href="#">Footwear 1</a></li>
-                            <li><a href="#">Footwear 2</a></li>
-                            <li><a href="#">Footwear 3</a></li>
-                        </ul>
+                        <a href="home.php">Home</a>
+                    </li>
+                    <li data-toggle="collapse" data-target="#footwear" class="collapsed">
+                        <a href="about.php">Why "Your memories"?</a>
+                    </li>
+                    <li data-toggle="collapse" data-target="#footwear" class="collapsed">
+                        <a href="history.php">Order History</a>
+                    </li>
+                    <li data-toggle="collapse" data-target="#footwear" class="collapsed">
+                        <a href="cart.php">Cart</a>
+                    </li>
+                    <li data-toggle="collapse" data-target="#footwear" class="collapsed">
+                        <a href="contact.php">Contact</a>
                     </li>
                 </ul>
             </div>
@@ -94,49 +150,36 @@
     </div>
 
     <div id="wrapper">
-
+        
         <!-- ****** Header Area Start ****** -->
-        <header class="header_area bg-img background-overlay-white" style="background-image: url(img/bg-img/bg-1.jpg);">
+        <header class="header_area bg-img" style="background-color: black">
             <!-- Top Header Area Start -->
             <div class="top_header_area">
                 <div class="container h-100">
-                    <div class="row h-100 align-items-center justify-content-end">
-
-                        <div class="col-12 col-lg-7">
+                    <div class="row h-100 align-items-center justify-content-end" >
+                        <div class="col-12" style="background-color: cyan; padding: 10px; border-radius: 10px">
                             <div class="top_single_area d-flex align-items-center">
                                 <!-- Logo Area -->
-                                <div class="top_logo">
-                                    <a href="#"><img src="img/core-img/logo.png" alt=""></a>
+                                <div class="top_logo" >
+                                    <a href="home.php"><img src="img/core-img/favicon.ico" style="height: 70px; border-radius:10px; width: 15%; float: left" ><h3 style="width: 84%; float: right;font-family: Arial, Helvetica, sans-serif; margin-top: 20px">Your Memories</h3></a>
                                 </div>
                                 <!-- Cart & Menu Area -->
                                 <div class="header-cart-menu d-flex align-items-center ml-auto">
                                     <!-- Cart Area -->
                                     <div class="cart">
-                                        <a href="#" id="header-cart-btn" target="_blank"><span class="cart_quantity">2</span> <i class="ti-bag"></i> Your Bag $20</a>
-                                        <!-- Cart List Area Start -->
-                                        <ul class="cart-list">
-                                            <li>
-                                                <a href="#" class="image"><img src="img/product-img/product-10.jpg" class="cart-thumb" alt=""></a>
-                                                <div class="cart-item-desc">
-                                                    <h6><a href="#">Women's Fashion</a></h6>
-                                                    <p>1x - <span class="price">$10</span></p>
-                                                </div>
-                                                <span class="dropdown-product-remove"><i class="icon-cross"></i></span>
-                                            </li>
-                                            <li>
-                                                <a href="#" class="image"><img src="img/product-img/product-11.jpg" class="cart-thumb" alt=""></a>
-                                                <div class="cart-item-desc">
-                                                    <h6><a href="#">Women's Fashion</a></h6>
-                                                    <p>1x - <span class="price">$10</span></p>
-                                                </div>
-                                                <span class="dropdown-product-remove"><i class="icon-cross"></i></span>
-                                            </li>
-                                            <li class="total">
-                                                <span class="pull-right">Total: $20.00</span>
-                                                <a href="cart.html" class="btn btn-sm btn-cart">Cart</a>
-                                                <a href="checkout-1.html" class="btn btn-sm btn-checkout">Checkout</a>
-                                            </li>
-                                        </ul>
+                                    <?php
+                                        $con = mysqli_connect('localhost','root','','yourmemories') or die('Unable To connect');
+                                        $query="select * from cart";
+                                        $check = mysqli_query($con, $query);
+                                        $num = mysqli_num_rows($check); 
+                                        $total=$num;
+                                        $total=$total*0;
+                                        while($row=mysqli_fetch_array($check))
+							            {
+                                            $total=$total+$row['product_total'];
+                                        }
+                                        echo "<a href='cart.php' id='header-cart-btn' target='_blank'><span class='cart_quantity'>$num</span> <i class='ti-bag'></i> Your Cart: $total Rs</a>";
+                                    ?>
                                     </div>
                                     <div class="header-right-side-menu ml-15">
                                         <a href="#" id="sideMenuBtn"><i class="ti-menu" aria-hidden="true"></i></a>
@@ -144,78 +187,12 @@
                                 </div>
                             </div>
                         </div>
-
-                    </div>
-                </div>
-            </div>
-
-            <!-- Top Header Area End -->
-            <div class="main_header_area">
-                <div class="container h-100">
-                    <div class="row h-100">
-                        <div class="col-12 d-md-flex justify-content-between">
-                            <!-- Header Social Area -->
-                            <div class="header-social-area">
-                                <a href="#"><span class="karl-level">Share</span> <i class="fa fa-pinterest" aria-hidden="true"></i></a>
-                                <a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a>
-                                <a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a>
-                                <a href="#"><i class="fa fa-linkedin" aria-hidden="true"></i></a>
-                            </div>
-                            <!-- Menu Area -->
-                            <div class="main-menu-area">
-                                <nav class="navbar navbar-expand-lg align-items-start">
-
-                                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#karl-navbar" aria-controls="karl-navbar" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"><i class="ti-menu"></i></span></button>
-
-                                    <div class="collapse navbar-collapse align-items-start collapse" id="karl-navbar">
-                                        <ul class="navbar-nav animated" id="nav">
-                                            <li class="nav-item active"><a class="nav-link" href="index.html">Home</a></li>
-                                            <li class="nav-item dropdown">
-                                                <a class="nav-link dropdown-toggle" href="#" id="karlDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pages</a>
-                                                <div class="dropdown-menu" aria-labelledby="karlDropdown">
-                                                    <a class="dropdown-item" href="index.html">Home</a>
-                                                    <a class="dropdown-item" href="shop.html">Shop</a>
-                                                    <a class="dropdown-item" href="product-details.html">Product Details</a>
-                                                    <a class="dropdown-item" href="cart.html">Cart</a>
-                                                    <a class="dropdown-item" href="checkout.html">Checkout</a>
-                                                </div>
-                                            </li>
-                                            <li class="nav-item"><a class="nav-link" href="#">Dresses</a></li>
-                                            <li class="nav-item"><a class="nav-link" href="#"><span class="karl-level">hot</span> Shoes</a></li>
-                                            <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
-                                        </ul>
-                                    </div>
-                                </nav>
-                            </div>
-                            <!-- Help Line -->
-                            <div class="help-line">
-                                <a href="tel:+346573556778"><i class="ti-headphone-alt"></i> +34 657 3556 778</a>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
         </header>
         <!-- ****** Header Area End ****** -->
-
-        <section class="top-discount-area d-md-flex align-items-center">
-            <!-- Single Discount Area -->
-            <div class="single-discount-area">
-                <h5>Free Shipping &amp; Returns</h5>
-                <h6><a href="#">BUY NOW</a></h6>
-            </div>
-            <!-- Single Discount Area -->
-            <div class="single-discount-area">
-                <h5>20% Discount for all dresses</h5>
-                <h6>USE CODE: Colorlib</h6>
-            </div>
-            <!-- Single Discount Area -->
-            <div class="single-discount-area">
-                <h5>20% Discount for students</h5>
-                <h6>USE CODE: Colorlib</h6>
-            </div>
-        </section>
-
+        
         <!-- ****** Checkout Area Start ****** -->
         <div class="checkout_area section_padding_100">
             <div class="container">
@@ -223,80 +200,75 @@
 
                     <div class="col-12 col-md-6">
                         <div class="checkout_details_area mt-50 clearfix">
-
                             <div class="cart-page-heading">
-                                <h5>Billing Address</h5>
-                                <p>Enter your cupone code</p>
+                                <h5>Address Details</h5>
                             </div>
 
-                            <form action="#" method="post">
+                            <form method="post">
                                 <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label for="first_name">First Name <span>*</span></label>
-                                        <input type="text" class="form-control" id="first_name" value="" required>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="last_name">Last Name <span>*</span></label>
-                                        <input type="text" class="form-control" id="last_name" value="" required>
-                                    </div>
-                                    <div class="col-12 mb-3">
-                                        <label for="company">Company Name</label>
-                                        <input type="text" class="form-control" id="company" value="">
-                                    </div>
-                                    <div class="col-12 mb-3">
-                                        <label for="country">Country <span>*</span></label>
-                                        <select class="custom-select d-block w-100" id="country">
-                                        <option value="usa">United States</option>
-                                        <option value="uk">United Kingdom</option>
-                                        <option value="ger">Germany</option>
-                                        <option value="fra">France</option>
-                                        <option value="ind">India</option>
-                                        <option value="aus">Australia</option>
-                                        <option value="bra">Brazil</option>
-                                        <option value="cana">Canada</option>
-                                    </select>
-                                    </div>
-                                    <div class="col-12 mb-3">
-                                        <label for="street_address">Address <span>*</span></label>
-                                        <input type="text" class="form-control mb-3" id="street_address" value="">
-                                        <input type="text" class="form-control" id="street_address2" value="">
-                                    </div>
-                                    <div class="col-12 mb-3">
-                                        <label for="postcode">Postcode <span>*</span></label>
-                                        <input type="text" class="form-control" id="postcode" value="">
-                                    </div>
-                                    <div class="col-12 mb-3">
-                                        <label for="city">Town/City <span>*</span></label>
-                                        <input type="text" class="form-control" id="city" value="">
-                                    </div>
-                                    <div class="col-12 mb-3">
-                                        <label for="state">Province <span>*</span></label>
-                                        <input type="text" class="form-control" id="state" value="">
-                                    </div>
-                                    <div class="col-12 mb-3">
-                                        <label for="phone_number">Phone No <span>*</span></label>
-                                        <input type="number" class="form-control" id="phone_number" min="0" value="">
-                                    </div>
-                                    <div class="col-12 mb-4">
-                                        <label for="email_address">Email Address <span>*</span></label>
-                                        <input type="email" class="form-control" id="email_address" value="">
-                                    </div>
+                                <?php
+                                    $id=$_SESSION['userid'];
+                                    $con = mysqli_connect('localhost','root','','yourmemories') or die('Unable To connect');
+                                    $res=mysqli_query($con,"select * from customers where id='$id'");
 
-                                    <div class="col-12">
-                                        <div class="custom-control custom-checkbox d-block mb-2">
-                                            <input type="checkbox" class="custom-control-input" id="customCheck1">
-                                            <label class="custom-control-label" for="customCheck1">Terms and conitions</label>
+                                    while($row=mysqli_fetch_array($res))
+                                    {                      
+                                        $name=$row['name'];
+                                        $email=$row['email'];
+                                        $num=$row['contact'];
+                                        $address=$row['address'];
+                                    }
+                                    echo '<div class="col-md-12 mb-3">';
+                                    echo '<label >Name </label>';
+                                    echo  "<input type='text' class='form-control' name='name' value='$name'>";
+                                    echo '</div>';
+                                    echo '<div class="col-12 mb-3">';
+                                    echo '<label >Address</label>';
+                                    echo  "<input type='text' class='form-control' name='address' value='$address'>";
+                                    echo '</div>';
+                                    echo '<div class="col-12 mb-3">';
+                                    echo '<label >Phone Number</label>';
+                                    echo  "<input type='text' class='form-control' name='contact' value='$num'>";
+                                    echo '</div>';
+                                    echo '<div class="col-12 mb-4">';
+                                    echo '<label >Email Address</label>';
+                                    echo  "<input type='text' class='form-control' name='mail' value='$email'>";
+                                    echo '</div>';
+                                    echo '<div class="col-12 mb-4">';
+                                    echo '<label >Delievery City</label>';
+                                    echo  "<input type='text' class='form-control' name='dcity'>";
+                                    echo '</div>';
+                                    echo '<div class="col-12 mb-4">';
+                                    echo '<label >Note (If Any)</label>';
+                                    echo  "<input type='text' class='form-control' name='note'>";
+                                    echo '</div>';
+                                    ?>
+                                    <div class="col-6">
+                                        <div  class="custom-control custom-checkbox d-block mb-1">
+                                            <input type="checkbox" class="custom-control-input" onchange="showcc(id)" id="customCheck1" name="check" value="COD">
+                                            <label class="custom-control-label" for="customCheck1">Cash On Delivery</label>
                                         </div>
-                                        <div class="custom-control custom-checkbox d-block mb-2">
-                                            <input type="checkbox" class="custom-control-input" id="customCheck2">
-                                            <label class="custom-control-label" for="customCheck2">Create an accout</label>
+                                        <div  class="custom-control custom-checkbox d-block mb-1">
+                                            <input type="checkbox" class="custom-control-input" onchange="showcc(id)" id="customCheck2" name="check" value="CC">
+                                            <label class="custom-control-label" for="customCheck2">Credit Card</label>
                                         </div>
-                                        <div class="custom-control custom-checkbox d-block">
-                                            <input type="checkbox" class="custom-control-input" id="customCheck3">
-                                            <label class="custom-control-label" for="customCheck3">Subscribe to our newsletter</label>
-                                        </div>
+                                    </div>
+                                    <div class="col-12" id="ccdetails" style="display: none; background-color: cyan; padding: 10px">
+                                        <label >Card Number</label>
+                                        <input type='text' class='form-control' name='cardno'>
+                                        <label >Name on Card</label>
+                                        <input type='text' class='form-control' name='noc'>
+                                        <label >3 digits Cvv Number</label>
+                                        <input type='number' class='form-control' name='cvv'>
+                                        <label >Expiry Date</label>
+                                        <input type='date' class='form-control' name='exdate' min=
+                                                    <?php
+                                                        echo date('Y-m-d');
+                                                    ?>
+                                        >
                                     </div>
                                 </div>
+                                <input style="margin-top:20px; display: block;" class="btn karl-checkout-btn" type="submit" name="place" value="Place Order">
                             </form>
                         </div>
                     </div>
@@ -305,146 +277,59 @@
                         <div class="order-details-confirmation">
 
                             <div class="cart-page-heading">
-                                <h5>Your Order</h5>
-                                <p>The Details</p>
+                                <h5>Order Details</h5>
                             </div>
 
                             <ul class="order-details-form mb-4">
-                                <li><span>Product</span> <span>Total</span></li>
-                                <li><span>Cocktail Yellow dress</span> <span>$59.90</span></li>
-                                <li><span>Subtotal</span> <span>$59.90</span></li>
-                                <li><span>Shipping</span> <span>Free</span></li>
-                                <li><span>Total</span> <span>$59.90</span></li>
+                                <?php
+                                    $sub_total=$_SESSION['subtotal'];
+                                    $total=$_SESSION['total'];
+                                    $count=$_SESSION['procount'];
+                                    echo "<li><span>Products Count : </span> <span>$count</span></li>";
+                                    echo "<li><span>Total : </span> <span>$total</span></li>";
+                                    echo "<li><span>Shipping : </span> <span>100</span></li>";
+                                    echo "<li><span>Sub Total : </span> <span>$sub_total</span></li>";
+                                ?>
                             </ul>
-
-
-                            <div id="accordion" role="tablist" class="mb-4">
-                                <div class="card">
-                                    <div class="card-header" role="tab" id="headingOne">
-                                        <h6 class="mb-0">
-                                            <a data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne"><i class="fa fa-circle-o mr-3"></i>Paypal</a>
-                                        </h6>
-                                    </div>
-
-                                    <div id="collapseOne" class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion">
-                                        <div class="card-body">
-                                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin pharetra tempor so dales. Phasellus sagittis auctor gravida. Integ er bibendum sodales arcu id te mpus. Ut consectetur lacus.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card">
-                                    <div class="card-header" role="tab" id="headingTwo">
-                                        <h6 class="mb-0">
-                                            <a class="collapsed" data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo"><i class="fa fa-circle-o mr-3"></i>cash on delievery</a>
-                                        </h6>
-                                    </div>
-                                    <div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion">
-                                        <div class="card-body">
-                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo quis in veritatis officia inventore, tempore provident dignissimos.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card">
-                                    <div class="card-header" role="tab" id="headingThree">
-                                        <h6 class="mb-0">
-                                            <a class="collapsed" data-toggle="collapse" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree"><i class="fa fa-circle-o mr-3"></i>credit card</a>
-                                        </h6>
-                                    </div>
-                                    <div id="collapseThree" class="collapse" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion">
-                                        <div class="card-body">
-                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Esse quo sint repudiandae suscipit ab soluta delectus voluptate, vero vitae</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card">
-                                    <div class="card-header" role="tab" id="headingFour">
-                                        <h6 class="mb-0">
-                                            <a class="collapsed" data-toggle="collapse" href="#collapseFour" aria-expanded="true" aria-controls="collapseFour"><i class="fa fa-circle-o mr-3"></i>direct bank transfer</a>
-                                        </h6>
-                                    </div>
-                                    <div id="collapseFour" class="collapse show" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion">
-                                        <div class="card-body">
-                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est cum autem eveniet saepe fugit, impedit magni.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <a href="#" class="btn karl-checkout-btn">Place Order</a>
                         </div>
                     </div>
+
 
                 </div>
             </div>
         </div>
         <!-- ****** Checkout Area End ****** -->
 
-        <!-- ****** Footer Area Start ****** -->
-        <footer class="footer_area">
+        <!-- ****    Footer Area Start    **** -->
+
+        <footer class="footer_area" style="background-color: cyan">
             <div class="container">
                 <div class="row">
                     <!-- Single Footer Area Start -->
-                    <div class="col-12 col-md-6 col-lg-3">
+                    <div class="col-12 align-items-center">
                         <div class="single_footer_area">
-                            <div class="footer-logo">
-                                <img src="img/core-img/logo.png" alt="">
+                            <div class="footer-logo" style="padding-left: 42%">
+                                <img src="img/core-img/logo.jpg" alt="">
                             </div>
-                            <div class="copywrite_text d-flex align-items-center">
-                                <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | Made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a> &amp; distributed by <a href="https://themewagon.com" target="_blank">ThemeWagon</a>
+                            <div class="copywrite_text d-flex align-items-center" style="padding-left: 30%; color:  black" >
+                                <p style="color: black;"> <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | Made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Your Memories</a>
 <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></p>
                             </div>
                         </div>
                     </div>
-                    <!-- Single Footer Area Start -->
-                    <div class="col-12 col-sm-6 col-md-3 col-lg-2">
-                        <div class="single_footer_area">
-                            <ul class="footer_widget_menu">
-                                <li><a href="#">About</a></li>
-                                <li><a href="#">Blog</a></li>
-                                <li><a href="#">Faq</a></li>
-                                <li><a href="#">Returns</a></li>
-                                <li><a href="#">Contact</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <!-- Single Footer Area Start -->
-                    <div class="col-12 col-sm-6 col-md-3 col-lg-2">
-                        <div class="single_footer_area">
-                            <ul class="footer_widget_menu">
-                                <li><a href="#">My Account</a></li>
-                                <li><a href="#">Shipping</a></li>
-                                <li><a href="#">Our Policies</a></li>
-                                <li><a href="#">Afiliates</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <!-- Single Footer Area Start -->
-                    <div class="col-12 col-lg-5">
-                        <div class="single_footer_area">
-                            <div class="footer_heading mb-30">
-                                <h6>Subscribe to our newsletter</h6>
-                            </div>
-                            <div class="subscribtion_form">
-                                <form action="#" method="post">
-                                    <input type="email" name="mail" class="mail" placeholder="Your email here">
-                                    <button type="submit" class="submit">Subscribe</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
                 </div>
-                <div class="line"></div>
+                <div class="line" style="background-color: black;"></div>
 
                 <!-- Footer Bottom Area Start -->
                 <div class="footer_bottom_area">
                     <div class="row">
                         <div class="col-12">
                             <div class="footer_social_area text-center">
-                                <a href="#"><i class="fa fa-pinterest" aria-hidden="true"></i></a>
-                                <a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a>
-                                <a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a>
-                                <a href="#"><i class="fa fa-linkedin" aria-hidden="true"></i></a>
+                                <a href="https://www.instagram.com/yourmemories.pk/"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+                                <a href="https://www.facebook.com/YourMemoriespk-109887907502323"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                                <a href="yourmemories.pk@gmail.com"><i class="fa fa-envelope" aria-hidden="true"></i></a>
+                                <a href="http://www.yourmemories.com/"><i class="fa fa-globe" aria-hidden="true"></i></a>
                             </div>
                         </div>
                     </div>

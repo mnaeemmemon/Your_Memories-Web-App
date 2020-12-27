@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <?php
     session_start();
+    if($_SESSION['userid']=="")
+    {
+        header('location: index.php');
+    }
+    $prod_id = $_GET['id'];
     if(array_key_exists('addtocart', $_POST))
     {
         $p_id=$_POST['pid'];
@@ -84,7 +89,7 @@
     {
         $id=$_POST['pid'];
         $_SESSION['viewid']=$id;
-        header('location: product-details.php');
+        header('location: product-details.php'."?".$id);
     }
     if(array_key_exists('addreview', $_POST))
     {
@@ -131,7 +136,7 @@
 
 <body>
 
-    <div class="catagories-side-menu">
+<div class="catagories-side-menu">
         <!-- Close Icon -->
         <div id="sideMenuClose">
             <i class="ti-close"></i>
@@ -147,6 +152,9 @@
                     </li>
                     <li data-toggle="collapse" data-target="#footwear" class="collapsed">
                         <a href="about.php">Why "Your memories"?</a>
+                    </li>
+                    <li data-toggle="collapse" data-target="#footwear" class="collapsed">
+                        <a href="history.php">Order History</a>
                     </li>
                     <li data-toggle="collapse" data-target="#footwear" class="collapsed">
                         <a href="cart.php">Cart</a>
@@ -171,7 +179,7 @@
                             <div class="top_single_area d-flex align-items-center">
                                 <!-- Logo Area -->
                                 <div class="top_logo" >
-                                    <a href="home.php"><h3 style="font-family: Arial, Helvetica, sans-serif;">Your Memories</h3></a>
+                                    <a href="home.php"><img src="img/core-img/favicon.ico" style="height: 70px; border-radius:10px; width: 15%; float: left" ><h3 style="width: 84%; float: right;font-family: Arial, Helvetica, sans-serif; margin-top: 20px">Your Memories</h3></a>
                                 </div>
                                 <!-- Cart & Menu Area -->
                                 <div class="header-cart-menu d-flex align-items-center ml-auto">
@@ -366,7 +374,6 @@
                     <div class="col-12 col-md-8">
                         <div class="karl-testimonials-slides owl-carousel">
                             <?php
-                                    $prod_id=$_SESSION['viewid'];
                                     $con = mysqli_connect('localhost','root','','yourmemories') or die('Unable To connect');
                                     $res=mysqli_query($con,"select * from reviews where product_id='$prod_id'");
                                     while($row=mysqli_fetch_array($res))
@@ -430,10 +437,10 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
                     <div class="row">
                         <div class="col-12">
                             <div class="footer_social_area text-center">
-                                <a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a>
-                                <a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a>
-                                <a href="#"><i class="fa fa-envelope" aria-hidden="true"></i></a>
-                                <a href="#"><i class="fa fa-globe" aria-hidden="true"></i></a>
+                                <a href="https://www.instagram.com/yourmemories.pk/"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+                                <a href="https://www.facebook.com/YourMemoriespk-109887907502323"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                                <a href="yourmemories.pk@gmail.com"><i class="fa fa-envelope" aria-hidden="true"></i></a>
+                                <a href="http://www.yourmemories.com/"><i class="fa fa-globe" aria-hidden="true"></i></a>
                             </div>
                         </div>
                     </div>

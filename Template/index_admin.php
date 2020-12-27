@@ -2,7 +2,7 @@
 <?php
 
 	session_start();
-
+	$_SESSION['admin']="";
 	if($_POST) 
 	{
 		$_SESSION['user'] = $_POST['username'];
@@ -36,6 +36,7 @@
 					$_SESSION['userid'] = $row['id'];
 				}
 				echo "<script>localStorage.setItem('userExist', true); </script>";
+				$_SESSION['admin']="login";
 				header('location: admin/index.php');
 			}
 			else if($num2 == 1)
@@ -59,7 +60,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Login Page | Admin portal</title>
+	<title>Login Page | Admin portal</title>
+	<link rel="icon" href="img/core-img/favicon.ico">
     <link rel="stylesheet" href="fonts/material-icon/css/material-design-iconic-font.min.css">
 	<script type="text/javascript">
         window.history.pushState(null, "", window.location.href);
@@ -69,7 +71,7 @@ window.onpopstate = function () {
     </script>
     <link rel="stylesheet" href="css/style2.css">
 </head>
-<body style="background-image: url(img/bg-img/bg.jpg)" >
+<body style="background-image: url(img/bg-img/bg-3.jpeg)" >
 
     <div class="main">
 
@@ -82,7 +84,7 @@ window.onpopstate = function () {
                             <input type="text" class="form-input" name="username" id="name" placeholder="Your Name"/>
                         </div>
                         <div class="form-group">
-                            <input type="text" class="form-input" name="password" id="password" placeholder="Password"/>
+                            <input type="password" class="form-input" name="password" id="password" placeholder="Password"/>
                             <span toggle="#password" class="zmdi zmdi-eye field-icon toggle-password"></span>
                         </div>
                         <div class="form-group">

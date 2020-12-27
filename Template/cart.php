@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <?php
     session_start();
+    if($_SESSION['userid']=="")
+    {
+        header('location: index.php');
+    }
     if(array_key_exists('delete', $_POST))
     {
         $prod_id=$_POST['prodid'];
@@ -16,10 +20,78 @@
             echo '<script>alert("Item Not Deleted!!")</script>';
         }
     }
+    if(array_key_exists('apply', $_POST))
+    {
+        $cpn=$_POST['coupon'];
+
+        $con = mysqli_connect('localhost','root','','yourmemories') or die('Unable To connect');
+        if($cpn=="Stud20")
+        {
+            $query = "select * from cart";
+            $check = mysqli_query($con, $query);
+            while($row=mysqli_fetch_array($check))
+            {
+                $total=$row['product_total'];
+                $p_id=$row['product_id'];
+                $total2=($total*0.20);
+                $total=$total-$total2;
+                $query3 = "update cart set product_total='$total' where product_id='$p_id'";
+                mysqli_query($con, $query3);
+            }
+        }
+        elseif($cpn=="Lig20")
+        {
+            $query = "select * from cart";
+            $check = mysqli_query($con, $query);
+            while($row=mysqli_fetch_array($check))
+            {
+                $total=$row['product_total'];
+                $p_id=$row['product_id'];
+                $query2 = "select * from products where id='$p_id'";
+                $check2 = mysqli_query($con, $query2);
+                while($row2=mysqli_fetch_array($check2))
+                {  $type=$row2['type']; }
+
+                if($type="Lights")
+                {
+                    $total2=($total*0.20);
+                    $total=$total-$total2;
+                    $query3 = "update cart set product_total='$total' where product_id='$p_id'";
+                    mysqli_query($con, $query3);
+                }
+            }
+        }
+        elseif($cpn=="Mir30")
+        {
+            $query = "select * from cart";
+            $check = mysqli_query($con, $query);
+            while($row=mysqli_fetch_array($check))
+            {
+                $total=$row['product_total'];
+                $p_id=$row['product_id'];
+                $query2 = "select * from products where id='$p_id'";
+                $check2 = mysqli_query($con, $query2);
+                while($row2=mysqli_fetch_array($check2))
+                {  $type=$row2['type']; }
+
+                if($type="Mirrors")
+                {
+                    $total2=($total*0.20);
+                    $total=$total-$total2;
+                    $query3 = "update cart set product_total='$total' where product_id='$p_id'";
+                    mysqli_query($con, $query3);
+                }
+            }
+        }
+        else
+        {
+            echo '<script>alert("Coupon Not Valid!!")</script>';
+        }
+    }
     if(array_key_exists('deleteall', $_POST))
     {
         $con = mysqli_connect('localhost','root','','yourmemories') or die('Unable To connect');
-        $query = "drop table cart";
+        $query = "TRUNCATE cart";
         if(mysqli_query($con, $query))
         {
             echo '<script>alert("Cart Cleared Successfully!!")</script>';
@@ -56,7 +128,7 @@
 
 <body>
 
-    <div class="catagories-side-menu">
+<div class="catagories-side-menu">
         <!-- Close Icon -->
         <div id="sideMenuClose">
             <i class="ti-close"></i>
@@ -66,12 +138,15 @@
             <div class="menu-list">
                 <h6>Menu</h6>
                 <ul id="menu-content" class="menu-content collapse out">
-                     <!-- Single Item -->
+                    <!-- Single Item -->
                     <li data-toggle="collapse" data-target="#footwear" class="collapsed">
                         <a href="home.php">Home</a>
                     </li>
                     <li data-toggle="collapse" data-target="#footwear" class="collapsed">
                         <a href="about.php">Why "Your memories"?</a>
+                    </li>
+                    <li data-toggle="collapse" data-target="#footwear" class="collapsed">
+                        <a href="history.php">Order History</a>
                     </li>
                     <li data-toggle="collapse" data-target="#footwear" class="collapsed">
                         <a href="cart.php">Cart</a>
@@ -96,7 +171,7 @@
                             <div class="top_single_area d-flex align-items-center">
                                 <!-- Logo Area -->
                                 <div class="top_logo" >
-                                    <a href="home.php"><h3 style="font-family: Arial, Helvetica, sans-serif;">Your Memories</h3></a>
+                                    <a href="home.php"><img src="img/core-img/favicon.ico" style="height: 70px; border-radius:10px; width: 15%; float: left" ><h3 style="width: 84%; float: right;font-family: Arial, Helvetica, sans-serif; margin-top: 20px">Your Memories</h3></a>
                                 </div>
                                 <!-- Cart & Menu Area -->
                                 <div class="header-cart-menu d-flex align-items-center ml-auto">
@@ -149,7 +224,7 @@
                                     $uid=$_SESSION['userid'];
                                     $con = mysqli_connect('localhost','root','','yourmemories') or die('Unable To connect');
                                     $res=mysqli_query($con,"select * from cart where customer_id='$uid'");
-
+                                    $details="";
                                     while($row=mysqli_fetch_array($res))
                                     {
                                         $quantity=$row['product_quantity'];
@@ -183,7 +258,9 @@
                                         echo '</form>';
                                         echo '<td>';
                                         echo '</tr>';
-                                        }
+                                        $details = (string)$details."Product Name: ".(string)$name." | Quantity: ".(string)$quantity." | Price: ".(string)$price.' | <br>';
+                                    }
+                                    $_SESSION['details']=$details;
                                     ?>
                                 </tbody>
                             </table>
@@ -195,7 +272,7 @@
                             </div>
                             <div class="update-checkout w-50 text-right">
                                 <form method="post">
-                                <input type="submit" name="deleteall" value="Clear Cart"/>
+                                <input  type="submit" style="background-color: black; color: white; padding: 5px; border-radius: 5px" name="deleteall" value="Clear Cart"/>
                                 </form>
                             </div>
                         </div>
@@ -207,12 +284,12 @@
                     <div class="col-12 col-md-6 col-lg-6">
                         <div class="coupon-code-area mt-70">
                             <div class="cart-page-heading">
-                                <h5>Cupon code</h5>
-                                <p>Enter your coupone code</p>
+                                <h5>Coupon code</h5>
+                                <p>Enter your coupon code</p>
                             </div>
-                            <form action="#">
-                                <input type="search" name="search" placeholder="Ex: Stud20">
-                                <button type="submit">Apply</button>
+                            <form method="post">
+                                <input type="text" name="coupon" placeholder="Ex: Stud20">
+                                <button type="submit" name="apply">Apply</button>
                             </form>
                         </div>
                     </div>
@@ -224,11 +301,29 @@
                             </div>
 
                             <ul class="cart-total-chart">
-                                <li><span>Subtotal</span> <span>$59.90</span></li>
-                                <li><span>Shipping</span> <span>Free</span></li>
-                                <li><span><strong>Total</strong></span> <span><strong>$59.90</strong></span></li>
+                                <?php
+                                    $uid=$_SESSION['userid'];
+                                    $con = mysqli_connect('localhost','root','','yourmemories') or die('Unable To connect');
+                                    $res=mysqli_query($con,"select * from cart where customer_id='$uid'");
+                                    $total=0;
+                                    $sub_total=0;
+                                    $count=0;
+                                    while($row=mysqli_fetch_array($res))
+                                    {
+                                        $total=$total+$row['product_total'];
+                                        $count++;
+                                    }
+                                    if($total>0)
+                                    {   $sub_total=$total+100;  }
+                                    $_SESSION['subtotal']=$sub_total;
+                                    $_SESSION['total']=$total;
+                                    $_SESSION['procount']=$count;
+                                    echo "<li><span>Subtotal</span> <span>$total Rs</span></li>";
+                                    echo '<li><span>Shipping</span> <span>100 Rs</span></li>';
+                                    echo "<li><span><strong>Total</strong></span> <span><strong>$sub_total Rs</strong></span></li>";
+                                ?>    
                             </ul>
-                            <a href="checkout.html" class="btn karl-checkout-btn">Proceed to checkout</a>
+                            <a href="checkout.php" class="btn karl-checkout-btn">Proceed to checkout</a>
                         </div>
                     </div>
                 </div>
@@ -262,10 +357,10 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
                     <div class="row">
                         <div class="col-12">
                             <div class="footer_social_area text-center">
-                                <a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a>
-                                <a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a>
-                                <a href="#"><i class="fa fa-envelope" aria-hidden="true"></i></a>
-                                <a href="#"><i class="fa fa-globe" aria-hidden="true"></i></a>
+                                <a href="https://www.instagram.com/yourmemories.pk/"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+                                <a href="https://www.facebook.com/YourMemoriespk-109887907502323"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                                <a href="yourmemories.pk@gmail.com"><i class="fa fa-envelope" aria-hidden="true"></i></a>
+                                <a href="http://www.yourmemories.com/"><i class="fa fa-globe" aria-hidden="true"></i></a>
                             </div>
                         </div>
                     </div>

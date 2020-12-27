@@ -1,6 +1,12 @@
 <!DOCTYPE html>
+<?php
+    session_start();
+    if($_SESSION['userid']=="")
+    {
+        header('location: index.php');
+    }
+?>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="description" content="">
@@ -25,7 +31,7 @@
 
 <body>
     
-    <div class="catagories-side-menu">
+<div class="catagories-side-menu">
         <!-- Close Icon -->
         <div id="sideMenuClose">
             <i class="ti-close"></i>
@@ -41,6 +47,9 @@
                     </li>
                     <li data-toggle="collapse" data-target="#footwear" class="collapsed">
                         <a href="about.php">Why "Your memories"?</a>
+                    </li>
+                    <li data-toggle="collapse" data-target="#footwear" class="collapsed">
+                        <a href="history.php">Order History</a>
                     </li>
                     <li data-toggle="collapse" data-target="#footwear" class="collapsed">
                         <a href="cart.php">Cart</a>
@@ -65,7 +74,7 @@
                             <div class="top_single_area d-flex align-items-center">
                                 <!-- Logo Area -->
                                 <div class="top_logo" >
-                                    <a href="home.php"><h3 style="font-family: Arial, Helvetica, sans-serif;">Your Memories</h3></a>
+                                    <a href="home.php"><img src="img/core-img/favicon.ico" style="height: 70px; border-radius:10px; width: 15%; float: left" ><h3 style="width: 84%; float: right;font-family: Arial, Helvetica, sans-serif; margin-top: 20px">Your Memories</h3></a>
                                 </div>
                                 <!-- Cart & Menu Area -->
                                 <div class="header-cart-menu d-flex align-items-center ml-auto">
@@ -97,7 +106,22 @@
         </header>
         <!-- ****** Header Area End ****** -->
         
-        <div>
+        <div style="margin: 20px; border-radius: 10px; border: 5px black solid; background-color: cyan; text-align: center; padding: 10px" > 
+        <h2>Convert your ᴅɪɢɪᴛᴀʟ ᴘʜᴏᴛᴏs Into ᴘʀᴇᴄɪᴏᴜs ᴍᴇᴍᴏʀɪᴇs With Us 🖼❤️</h2>
+        <h4 style="margin-top: 20px">We can covert your  picture in any size and shape you want! </h4>
+        <h4>Our main goal is to provide your pictures to your doorsteps,without you doing any hassle.</h4>
+        <div style="margin: 20px; border-radius: 10px; border: 3px black solid; background-color: white;">
+        <h3 style="padding: 10px; background-color: grey; color: white">OUR BEST SELLING PRODUCTS</h3>
+        <ol>
+        <li><h4>Crescent Mirror</h4></li>
+        <li><h4>Polaroid photos.</h4></li>
+        <li><h4>Phone Polaroid.</h4></li>
+        <li><h4>Music Album Frame.</h4></li>
+        <li><h4>Iron Grid.</h4></li>
+        </ol>
+        </div>
+        <h3>🔹-ʙᴀᴄᴋ ᴛᴏ ᴛʜᴇ 90's⏳</h3>
+        <h3>-𝒟𝑒𝓁𝒾𝓋𝑒𝓇𝓎 𝒶𝓁𝓁 𝒶𝒸𝓇𝑜𝓈𝓈 𝒫𝒶𝓀𝒾𝓈𝓉𝒶𝓃 🇵🇰</h3>
         </div>
 
 
@@ -127,10 +151,10 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
                     <div class="row">
                         <div class="col-12">
                             <div class="footer_social_area text-center">
-                                <a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a>
-                                <a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a>
-                                <a href="#"><i class="fa fa-envelope" aria-hidden="true"></i></a>
-                                <a href="#"><i class="fa fa-globe" aria-hidden="true"></i></a>
+                                <a href="https://www.instagram.com/yourmemories.pk/"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+                                <a href="https://www.facebook.com/YourMemoriespk-109887907502323"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                                <a href="yourmemories.pk@gmail.com"><i class="fa fa-envelope" aria-hidden="true"></i></a>
+                                <a href="http://www.yourmemories.com/"><i class="fa fa-globe" aria-hidden="true"></i></a>
                             </div>
                         </div>
                     </div>

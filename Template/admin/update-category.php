@@ -1,5 +1,10 @@
 <!DOCTYPE html>
 <?php
+	session_start();
+	if($_SESSION['admin']=="")
+    {
+        header('location: ../index_admin.php');
+    }
 if($_POST){
 	$name = $_POST['name'];
 	$description = $_POST['description'];
@@ -56,8 +61,7 @@ if($_POST){
 	<meta name="format-detection" content="telephone=no">
 	
 	<!-- FAVICONS ICON ============================================= -->
-	<link rel="icon" href="../error-404.html" type="image/x-icon" />
-	<link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.png" />
+	<link rel="icon" href="../img/core-img/favicon.ico">
 	
 	<!-- PAGE TITLE HERE ============================================= -->
 	<title>Update Category | Admin Portal</title>

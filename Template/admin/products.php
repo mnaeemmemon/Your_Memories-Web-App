@@ -1,4 +1,11 @@
 <!DOCTYPE html>
+<?php
+	session_start();
+	if($_SESSION['admin']=="")
+    {
+        header('location: ../index_admin.php');
+    }
+?>
 <html lang="en">
 
 <!-- Mirrored from educhamp.themetrades.com/demo/admin/bookmark.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 22 Feb 2019 13:09:05 GMT -->
@@ -21,8 +28,7 @@
 	<meta name="format-detection" content="telephone=no">
 	
 	<!-- FAVICONS ICON ============================================= -->
-	<link rel="icon" href="../error-404.html" type="image/x-icon" />
-	<link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.png" />
+	<link rel="icon" href="../img/core-img/favicon.ico">
 	
 	<!-- PAGE TITLE HERE ============================================= -->
 	<title>Products | Admin Portal</title>

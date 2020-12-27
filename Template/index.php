@@ -2,7 +2,10 @@
 <?php
 
 	session_start();
-
+	if($_SESSION['userid']!="")
+	{
+		$_SESSION['userid']="";
+	}
 	if($_POST) 
 	{
 		$_SESSION['user'] = $_POST['username'];
@@ -66,10 +69,11 @@
         history.back();
         history.forward();
         window.onpopstate = function () { history.go(1); };
-    </script>
+	</script>
+	 <link rel="icon" href="img/core-img/favicon.ico">
     <link rel="stylesheet" href="css/style2.css">
 </head>
-<body style="background-image: url(img/bg-img/bg.jpg)" >
+<body style="background-image: url(img/bg-img/bg-2.jpeg)" >
 
     <div class="main">
 
@@ -82,7 +86,7 @@
                             <input type="text" class="form-input" name="username" id="name" placeholder="Your Name"/>
                         </div>
                         <div class="form-group">
-                            <input type="text" class="form-input" name="password" id="password" placeholder="Password"/>
+                            <input type="password" class="form-input" name="password" id="password" placeholder="Password"/>
                             <span toggle="#password" class="zmdi zmdi-eye field-icon toggle-password"></span>
                         </div>
                         <div class="form-group">

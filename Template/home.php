@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <?php
     session_start();
+    if($_SESSION['userid']=="")
+    {
+        header('location: index.php');
+    }
+    if(array_key_exists('logout', $_POST))
+    {
+        $_SESSION['userid']="";
+        header('location: index.php');
+    }
     if(array_key_exists('addtocart', $_POST))
     {
         $p_id=$_POST['pid'];
@@ -84,7 +93,7 @@
     {
         $id=$_POST['pid'];
         $_SESSION['viewid']=$id;
-        header('location: product-details.php');
+        header('location: product-details.php'."?id=".$id);
     }
 ?>
 <html lang="en">
@@ -128,6 +137,9 @@
                         <a href="about.php">Why "Your memories"?</a>
                     </li>
                     <li data-toggle="collapse" data-target="#footwear" class="collapsed">
+                        <a href="history.php">Order History</a>
+                    </li>
+                    <li data-toggle="collapse" data-target="#footwear" class="collapsed">
                         <a href="cart.php">Cart</a>
                     </li>
                     <li data-toggle="collapse" data-target="#footwear" class="collapsed">
@@ -146,11 +158,11 @@
             <div class="top_header_area">
                 <div class="container h-100">
                     <div class="row h-100 align-items-center justify-content-end" >
-                        <div class="col-12" style="background-color: cyan; padding: 10px; border-radius: 10px">
+                        <div class="col-11" style="background-color: cyan; padding: 10px; border-radius: 10px">
                             <div class="top_single_area d-flex align-items-center">
                                 <!-- Logo Area -->
                                 <div class="top_logo" >
-                                    <a href="home.php"><h3 style="font-family: Arial, Helvetica, sans-serif;">Your Memories</h3></a>
+                                    <a href="home.php"><img src="img/core-img/favicon.ico" style="height: 70px; border-radius:10px; width: 15%; float: left" ><h3 style="width: 84%; float: right;font-family: Arial, Helvetica, sans-serif; margin-top: 20px">Your Memories</h3></a>
                                 </div>
                                 <!-- Cart & Menu Area -->
                                 <div class="header-cart-menu d-flex align-items-center ml-auto">
@@ -167,7 +179,7 @@
 							            {
                                             $total=$total+$row['product_total'];
                                         }
-                                        echo "<a href='cart.php' id='header-cart-btn' target='_blank'><span class='cart_quantity'>$num</span> <i class='ti-bag'></i> Your Cart: $total Rs</a>";
+                                        echo "<a href='cart.php' id='header-cart-btn'><span class='cart_quantity'>$num</span> <i class='ti-bag'></i> Your Cart: $total Rs</a>";
                                     ?>
                                     </div>
                                     <div class="header-right-side-menu ml-15">
@@ -175,7 +187,12 @@
                                     </div>
                                 </div>
                             </div>
+                            
                         </div>
+                        
+                        <form class="col-1" method="post">
+                            <input style="padding: 10px; border: 5px white solid; border-radius: 5px; background-color: cyan; color: black" type="submit" value="Logout" name="logout">
+                        </form>
                     </div>
                 </div>
             </div>
@@ -390,10 +407,10 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
                     <div class="row">
                         <div class="col-12">
                             <div class="footer_social_area text-center">
-                                <a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a>
-                                <a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a>
-                                <a href="#"><i class="fa fa-envelope" aria-hidden="true"></i></a>
-                                <a href="#"><i class="fa fa-globe" aria-hidden="true"></i></a>
+                                <a href="https://www.instagram.com/yourmemories.pk/"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+                                <a href="https://www.facebook.com/YourMemoriespk-109887907502323"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                                <a href="yourmemories.pk@gmail.com"><i class="fa fa-envelope" aria-hidden="true"></i></a>
+                                <a href="http://www.yourmemories.com/"><i class="fa fa-globe" aria-hidden="true"></i></a>
                             </div>
                         </div>
                     </div>

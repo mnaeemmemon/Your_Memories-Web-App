@@ -1,6 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-
+<?php
+	session_start();
+	if($_SESSION['admin']=="")
+    {
+        header('location: ../index_admin.php');
+    }
+	if(array_key_exists('change', $_POST))
+	{
+		$id=$_POST['id'];
+		$con = mysqli_connect('localhost','root','','yourmemories') or die('Unable To connect');
+		$query=mysqli_query($con, "update orders set status='Delivered' where id='$id'");
+	}
+?>
 <!-- Mirrored from educhamp.themetrades.com/demo/admin/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 22 Feb 2019 13:08:15 GMT -->
 <head>
 
@@ -21,8 +33,7 @@
 	<meta name="format-detection" content="telephone=no">
 	
 	<!-- FAVICONS ICON ============================================= -->
-	<link rel="icon" href="../error-404.html" type="image/x-icon" />
-	<link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.png" />
+	<link rel="icon" href="../img/core-img/favicon.ico">
 	
 	<!-- PAGE TITLE HERE ============================================= -->
 	<title>Your Memories | Admin Portal</title>
@@ -239,6 +250,8 @@
 							<h3>Orders</h3>
 						</div>
 						<div class="widget-inner">
+						<div class="orders-list">
+						<ul>
 						<?php
 						$con = mysqli_connect('localhost','root','','yourmemories') or die('Unable To connect');
 						$res=mysqli_query($con,"select * from orders");
@@ -249,27 +262,31 @@
 								$date= $row['delivery_date'];
 								$status= $row['status'];
 								$cid = $row['customer_id'];
+								$name=" ";
 
-								$res1=mysqli_query($con,"select from customers where id='$cid'");
-								$row2=mysqli_fetch_array($res1);
-
-								$name=$row2['name'];
+								$res1=mysqli_query($con,"select * from customers where id='$cid'");
+								while($row2=mysqli_fetch_array($res1))
+								{
+									$name=$row2['name'];
+								}
 								
-								echo '<div class="orders-list">';
-								echo '<ul>';
-								echo '<li>';
+								echo '<li style="margin-bottom: 20px;">';
 								echo '<span class="orders-title">';
 								echo "<a class='orders-title-name'>$name</a>";
 								echo "<span class='orders-info'>Order: $oid | Date: $date</span>";
 								echo '</span>';
 								echo '<span class="orders-btn">';
-								echo "<a class='btn button-sm red'>$status</a>";
+								echo '<form method="post">';
+								echo "<input name='id' type='hidden' value='$oid'>";
+								echo "<input class='btn button-sm red' name='change' type='submit' value='$status'>";
+								echo '</form>';
 								echo '</span>';
 								echo '</li>';
-								echo '</ul>';
-								echo '</div>';
 							} 
 						?>
+						
+						</ul>
+						</div>
 						</div>
 					</div>
 				</div>

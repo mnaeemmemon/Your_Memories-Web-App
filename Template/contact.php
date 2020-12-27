@@ -1,4 +1,11 @@
 <!DOCTYPE html>
+<?php
+    session_start();
+    if($_SESSION['userid']=="")
+    {
+        header('location: index.php');
+    }
+?>
 <html lang="en">
 
 <head>
@@ -25,7 +32,7 @@
 
 <body>
     
-    <div class="catagories-side-menu">
+<div class="catagories-side-menu">
         <!-- Close Icon -->
         <div id="sideMenuClose">
             <i class="ti-close"></i>
@@ -41,6 +48,9 @@
                     </li>
                     <li data-toggle="collapse" data-target="#footwear" class="collapsed">
                         <a href="about.php">Why "Your memories"?</a>
+                    </li>
+                    <li data-toggle="collapse" data-target="#footwear" class="collapsed">
+                        <a href="history.php">Order History</a>
                     </li>
                     <li data-toggle="collapse" data-target="#footwear" class="collapsed">
                         <a href="cart.php">Cart</a>
@@ -97,7 +107,19 @@
         </header>
         <!-- ****** Header Area End ****** -->
         
-        <div>
+        <div class="container" style="background-color: cyan; border: 3px black solid; border-radius: 5px; margin: 20px; margin-left:auto; margin-right: auto; display: block; padding: 10px">
+        <h3 style="background-color: black; padding: 10px; border-radius: 5px; text-align: center; color: white" ><strong>Website:</strong> yourmemories.pk</h3>
+        <h3 style="background-color: black; padding: 10px; border-radius: 5px; text-align: center; color: white"  ><strong>Located:</strong> Karachi Pakistan<h3>
+        <h3 style="background-color: black; padding: 10px; border-radius: 5px; text-align: center; color: white" ><strong>Email:</strong> yourmemories.pk@gmail.com</h3>
+        <h3 style="background-color: black; padding: 10px; border-radius: 5px; text-align: center; color: white" >
+        <strong>Contact:</strong>
+        | 0347 2455980 ( Arham ) | 
+        0344 1285084 ( Tayyab ) |
+        </h3>
+        <h3 style="background-color: black; padding: 10px; border-radius: 5px; text-align: center; color: white" >
+        <strong>Delivery Time:</strong> 3-7 working days</h3>
+        <h3 style="background-color: black; padding: 10px; border-radius: 5px; text-align: center; color: white" ><strong>Standard Delivery Charges</strong> For Karachi: Rs 200 | 
+        Other Cities : Rs 250</h3>
         </div>
 
 
@@ -127,10 +149,10 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
                     <div class="row">
                         <div class="col-12">
                             <div class="footer_social_area text-center">
-                                <a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a>
-                                <a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a>
-                                <a href="#"><i class="fa fa-envelope" aria-hidden="true"></i></a>
-                                <a href="#"><i class="fa fa-globe" aria-hidden="true"></i></a>
+                                <a href="https://www.instagram.com/yourmemories.pk/"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+                                <a href="https://www.facebook.com/YourMemoriespk-109887907502323"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                                <a href="yourmemories.pk@gmail.com"><i class="fa fa-envelope" aria-hidden="true"></i></a>
+                                <a href="http://www.yourmemories.com/"><i class="fa fa-globe" aria-hidden="true"></i></a>
                             </div>
                         </div>
                     </div>
