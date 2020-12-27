@@ -70,7 +70,7 @@
             <div class="top_header_area">
                 <div class="container h-100">
                     <div class="row h-100 align-items-center justify-content-end" >
-                        <div class="col-12" style="background-color: cyan; padding: 10px; border-radius: 10px">
+                        <div class="col-11" style="background-color: cyan; padding: 10px; border-radius: 10px">
                             <div class="top_single_area d-flex align-items-center">
                                 <!-- Logo Area -->
                                 <div class="top_logo" >
@@ -81,8 +81,9 @@
                                     <!-- Cart Area -->
                                     <div class="cart">
                                     <?php
+                                        $id=$_SESSION['userid'];
                                         $con = mysqli_connect('localhost','root','','yourmemories') or die('Unable To connect');
-                                        $query="select * from cart";
+                                        $query="select * from cart where customer_id='$id'";
                                         $check = mysqli_query($con, $query);
                                         $num = mysqli_num_rows($check); 
                                         $total=$num;
@@ -91,7 +92,7 @@
 							            {
                                             $total=$total+$row['product_total'];
                                         }
-                                        echo "<a href='cart.php' id='header-cart-btn' target='_blank'><span class='cart_quantity'>$num</span> <i class='ti-bag'></i> Your Cart: $total Rs</a>";
+                                        echo "<a href='cart.php' id='header-cart-btn'><span class='cart_quantity'>$num</span> <i class='ti-bag'></i> Your Cart: $total Rs</a>";
                                     ?>
                                     </div>
                                     <div class="header-right-side-menu ml-15">
@@ -99,7 +100,12 @@
                                     </div>
                                 </div>
                             </div>
+                            
                         </div>
+                        
+                        <form class="col-1" method="post">
+                            <input style="padding: 10px; border: 5px white solid; border-radius: 5px; background-color: cyan; color: black" type="submit" value="Logout" name="logout">
+                        </form>
                     </div>
                 </div>
             </div>

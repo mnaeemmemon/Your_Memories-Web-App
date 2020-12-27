@@ -169,8 +169,9 @@
                                     <!-- Cart Area -->
                                     <div class="cart">
                                     <?php
+                                        $id=$_SESSION['userid'];
                                         $con = mysqli_connect('localhost','root','','yourmemories') or die('Unable To connect');
-                                        $query="select * from cart";
+                                        $query="select * from cart where customer_id='$id'";
                                         $check = mysqli_query($con, $query);
                                         $num = mysqli_num_rows($check); 
                                         $total=$num;
